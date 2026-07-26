@@ -5,6 +5,8 @@ import type { Portrait } from "./portrait";
 
 export const motions = {
   idle: { row: 0, frames: 6, speed: 260 },
+  runningRight: { row: 1, frames: 8, speed: 120 },
+  runningLeft: { row: 2, frames: 8, speed: 120 },
   wave: { row: 3, frames: 4, speed: 125 },
   read: { row: 8, frames: 6, speed: 185 },
 } as const;
@@ -62,7 +64,7 @@ export function AnimatedPortrait({ portrait, motion }: { portrait: Portrait; mot
   }, [motion]);
 
   const style = {
-    "--sprite-x": `${frame * -192}px`,
+    "--sprite-x": `${(frame % motions[motion].frames) * -192}px`,
     "--sprite-y": `${motions[motion].row * -208}px`,
     backgroundImage: `url(${portrait.sprite})`,
   } as CSSProperties;

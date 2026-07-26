@@ -78,7 +78,7 @@ Set `chineseOutput: false` for English-only output. The live demo also exposes t
 
 ## Floating companion
 
-`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its bubble. The last offset is stored only in the visitor's browser.
+`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its bubble. While dragging, the portrait runs in the direction of travel and turns when the horizontal direction reverses. The last offset is stored only in the visitor's browser.
 
 ```tsx
 <FloatingPortrait
@@ -94,6 +94,8 @@ The included atlas currently uses these rows:
 | Row | Motion | Frames used |
 | --- | --- | --- |
 | 0 | Idle | 6 |
+| 1 | Drag / run right | 8 |
+| 2 | Drag / run left | 8 |
 | 3 | Wave | 4 |
 | 8 | Respond / review | 6 |
 

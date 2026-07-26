@@ -587,7 +587,7 @@ blockquote {
 }
 
 .floating-pet-button:hover .pet-sprite { transform: scale(1.16) translateY(-2px); }
-.floating-portrait.is-dragging .pet-sprite { transform: scale(1.08) rotate(-1deg); }
+.floating-portrait.is-dragging .pet-sprite { transform: scale(1.12); }
 
 footer {
   width: min(1240px, calc(100% - 64px));

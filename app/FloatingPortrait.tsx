@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import { AnimatedPortrait, useLivingPortrait } from "./portrait-motion";
+import { AnimatedPortrait, useLivingPortrait, type Motion } from "./portrait-motion";
 import type { Portrait } from "./portrait";
 
 type Point = { x: number; y: number };
@@ -11,6 +11,8 @@ type DragState = {
   startPointer: Point;
   startOffset: Point;
   startRect: DOMRect;
+  lastPointer: Point;
+  currentOffset: Point;
   moved: boolean;
 };
 
@@ -27,6 +29,7 @@ export function FloatingPortrait({
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
   const [bubbleOpen, setBubbleOpen] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [dragMotion, setDragMotion] = useState<Motion | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const drag = useRef<DragState | null>(null);
 
@@ -59,6 +62,8 @@ export function FloatingPortrait({
       startPointer: { x: event.clientX, y: event.clientY },
       startOffset: offset,
       startRect: rect,
+      lastPointer: { x: event.clientX, y: event.clientY },
+      currentOffset: offset,
       moved: false,
     };
     setDragging(true);
@@ -70,7 +75,14 @@ export function FloatingPortrait({
 
     const rawX = event.clientX - active.startPointer.x;
     const rawY = event.clientY - active.startPointer.y;
-    if (Math.hypot(rawX, rawY) > 6) active.moved = true;
+    const stepX = event.clientX - active.lastPointer.x;
+    active.lastPointer = { x: event.clientX, y: event.clientY };
+
+    if (Math.hypot(rawX, rawY) > 6) {
+      active.moved = true;
+      if (stepX > 1) setDragMotion("runningRight");
+      if (stepX < -1) setDragMotion("runningLeft");
+    }
 
     const dx = Math.min(
       window.innerWidth - 8 - active.startRect.right,
@@ -81,7 +93,9 @@ export function FloatingPortrait({
       Math.max(8 - active.startRect.top, rawY),
     );
 
-    setOffset({ x: active.startOffset.x + dx, y: active.startOffset.y + dy });
+    const nextOffset = { x: active.startOffset.x + dx, y: active.startOffset.y + dy };
+    active.currentOffset = nextOffset;
+    setOffset(nextOffset);
   };
 
   const finishPointer = (event: PointerEvent<HTMLButtonElement>, cancelled = false) => {
@@ -93,7 +107,8 @@ export function FloatingPortrait({
     }
     drag.current = null;
     setDragging(false);
-    window.localStorage.setItem(storageKey, JSON.stringify(offset));
+    setDragMotion(null);
+    window.localStorage.setItem(storageKey, JSON.stringify(active.currentOffset));
 
     if (!active.moved && !cancelled) sayLine();
   };
@@ -139,7 +154,7 @@ export function FloatingPortrait({
         }}
         aria-label={`拖拽 ${portrait.name}，或点击听一句诗`}
       >
-        <AnimatedPortrait portrait={portrait} motion={motion} />
+        <AnimatedPortrait portrait={portrait} motion={dragMotion ?? motion} />
       </button>
     </div>
   );

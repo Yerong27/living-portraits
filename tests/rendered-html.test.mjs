@@ -42,8 +42,9 @@ test("server-renders the Living Portraits stage", async () => {
 });
 
 test("ships a configurable and draggable floating portrait", async () => {
-  const [portrait, floating, page, readme, rights] = await Promise.all([
+  const [portrait, motion, floating, page, readme, rights] = await Promise.all([
     readFile(new URL("../app/portrait.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/portrait-motion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/FloatingPortrait.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
@@ -53,7 +54,12 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(portrait, /chineseOutput:\s*true/);
   assert.match(portrait, /characterBasis:\s*"historical-person"/);
   assert.match(portrait, /responses:\s*\[/);
+  assert.match(motion, /runningRight:\s*\{ row: 1, frames: 8/);
+  assert.match(motion, /runningLeft:\s*\{ row: 2, frames: 8/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
+  assert.match(floating, /stepX > 1\) setDragMotion\("runningRight"\)/);
+  assert.match(floating, /stepX < -1\) setDragMotion\("runningLeft"\)/);
+  assert.match(floating, /motion=\{dragMotion \?\? motion\}/);
   assert.match(floating, /setPointerCapture/);
   assert.match(floating, /localStorage\.setItem/);
   assert.match(floating, /event\.detail === 0/);
