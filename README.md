@@ -1,21 +1,21 @@
 # Living Portraits
 
-Small animated literary companions for the web. Click a portrait and it responds with a line from its work.
+Interactive character companions for the web. A portrait can float above a personal site, be dragged into place, and respond when clicked.
 
-The first portrait is **Emily Dickinson**: an 8 × 11 animated sprite atlas with six attributed quotations, optional Chinese reflections, responsive interaction, keyboard support, and reduced-motion support.
+The project is not limited to writers. A portrait may be inspired by a historical cultural figure, filmmaker, musician, screen icon, public-domain character, licensed fictional character, or an entirely original creation. **Emily Dickinson is the first example, not the boundary.**
 
 **[Live demo — Emily at the Window](https://emily-at-the-window.liyerongvv.chatgpt.site)**  
 The current Sites demo may ask you to sign in. The repository itself is public and runs locally without an account.
 
 ## What is included
 
-- A reusable React portrait configuration in [`app/portrait.ts`](app/portrait.ts)
+- A reusable character configuration in [`app/portrait.ts`](app/portrait.ts)
 - A draggable drop-in widget in [`app/FloatingPortrait.tsx`](app/FloatingPortrait.tsx)
-- Sprite animation and interaction logic in [`app/page.tsx`](app/page.tsx)
-- The Emily sprite atlas in [`public/emily-spritesheet.webp`](public/emily-spritesheet.webp)
-- A responsive editorial-style presentation
-- Six non-repeating, source-linked Emily Dickinson excerpts
-- Two demo modes: a composed portrait stage and a draggable floating companion
+- Shared animation and response logic in [`app/portrait-motion.tsx`](app/portrait-motion.tsx)
+- An 8 × 11 Emily sprite atlas
+- Two demo modes: portrait stage and draggable floating companion
+- Optional Chinese output, keyboard and touch support, reduced-motion support
+- A per-character rights record and a practical [`RIGHTS.md`](RIGHTS.md) review checklist
 - A Cloudflare-compatible vinext build
 
 ## Run locally
@@ -35,75 +35,98 @@ Before opening a pull request or deploying a fork:
 
 ```bash
 npm run lint
-npm run build
+npm test
 ```
 
 ## Make your own portrait
 
-Yes—forking is an intended use of this project.
+Forking and adapting the project is an intended use.
 
-1. Replace `public/emily-spritesheet.webp` with your own transparent sprite atlas.
-2. Edit `app/portrait.ts` with the character name, sprite path, quotations, notes, and source links.
-3. Change the presentation copy in `app/page.tsx` and the page metadata in `app/layout.tsx`.
-4. Adjust the sprite geometry in `app/globals.css` if your atlas does not use 192 × 208 px cells.
-5. Run the checks above, then deploy to your preferred React-compatible host.
+1. Replace the sprite atlas with original, licensed, or confirmed public-domain artwork.
+2. Add the character, response, source, and rights information to `app/portrait.ts`.
+3. Change the surrounding presentation copy and metadata.
+4. Adjust the sprite geometry if your atlas does not use 192 × 208 px cells.
+5. Complete the checklist in [`RIGHTS.md`](RIGHTS.md), then run the checks above.
 
-The Chinese reflection is controlled in one place:
+A response can be a quotation, original line, or sourced fact:
 
 ```ts
-export const emilyPortrait = {
-  chineseOutput: true, // set false for English-only output
-  // ...
+export const portrait = {
+  name: "Your character",
+  category: "original character",
+  sprite: "/your-character.webp",
+  chineseOutput: true,
+  rights: {
+    characterBasis: "original",
+    artwork: "Created for this project",
+    text: "Original dialogue",
+    reviewedOn: "2026-07-26",
+  },
+  responses: [
+    {
+      kind: "original",
+      line: "A line the character can say.",
+      meaning: "可选的中文输出。",
+      title: "Original dialogue",
+      source: "/rights",
+    },
+  ],
 };
 ```
 
-The live demo also exposes this as an immediate on/off switch, so both output modes can be tested without editing code.
+Set `chineseOutput: false` for English-only output. The live demo also exposes this as an immediate switch.
 
 ## Floating companion
 
-`FloatingPortrait` is independent from the page underneath it. It uses fixed positioning, supports mouse, pen, touch, and keyboard input, and distinguishes a click from a drag with a small movement threshold. A click selects a new non-repeating quote; a drag moves the portrait without opening the quote bubble. The last drag offset is stored only in the visitor's browser.
+`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its bubble. The last offset is stored only in the visitor's browser.
 
 ```tsx
-import { FloatingPortrait } from "./FloatingPortrait";
-import { emilyPortrait } from "./portrait";
-
 <FloatingPortrait
-  portrait={emilyPortrait}
-  chineseOutput={emilyPortrait.chineseOutput}
+  portrait={portrait}
+  chineseOutput={portrait.chineseOutput}
 />
 ```
 
-There is no separate “next quote” button: the portrait itself is the interaction target.
+The portrait itself is the interaction target; there is no separate “next” button.
 
-The included atlas uses this row contract:
+The included atlas currently uses these rows:
 
 | Row | Motion | Frames used |
 | --- | --- | --- |
 | 0 | Idle | 6 |
 | 3 | Wave | 4 |
-| 8 | Read / review | 6 |
+| 8 | Respond / review | 6 |
 
-The source atlas contains additional Codex pet motions and look directions, so future portraits can add richer pointer, focus, or scroll reactions without replacing the format.
+## Where the project can go
 
-## Adding more characters
-
-`Living Portraits` is deliberately broader than a single Emily project. A natural next step is to turn `app/portrait.ts` into a collection and select a portrait by route, for example:
+The same engine can support distinct collections or routes:
 
 ```text
-/emily-dickinson
-/jane-austen
-/walt-whitman
+/historical-icons
+/screen-and-music
+/public-domain-fiction
+/original-characters
 ```
 
-Keep each character's quotations, attribution links, and sprite path together. This makes it easier to review rights and sources when the collection grows.
+The interaction does not have to be a quotation. A character might offer an original greeting, a sourced fact, a reading recommendation, a link, or a small site action. Keep the response data and rights record beside the character.
 
-## Content and reuse
+## About the Chinese text
 
-Emily Dickinson's original poems are in the public domain. The interface uses short excerpts and links to the source poem at the Poetry Foundation or Academy of American Poets. The Chinese lines are original interpretive paraphrases rather than published translations.
+The Emily Chinese lines were written specifically for this project. They were not copied from a published Chinese translation and are intentionally stored as `meaning`, not `translation`.
 
-When creating another portrait, verify the rights for its writing, translations, likeness, and artwork. Public-domain status varies by author, country, edition, and type of asset.
+The process was:
 
-The project code and included generated interface assets are available under the [MIT License](LICENSE).
+1. Read the English line in the context of its poem.
+2. Identify its central image or thought.
+3. Write a short, natural Chinese interpretation suited to a speech bubble.
+
+That means they are interpretive paraphrases rather than line-by-line scholarly translations. For example, “希望，是栖息在灵魂里的小鸟” combines the opening metaphor with the following image of the bird perching in the soul.
+
+## Rights and reuse
+
+Code and included project-generated interface assets are available under the [MIT License](LICENSE). A software license does not grant rights to a third-party character, likeness, quotation, song, recording, film design, logo, or adaptation. Review every new portrait independently using [`RIGHTS.md`](RIGHTS.md).
+
+This repository provides a documentation workflow, not legal advice. Obtain permission or specialist advice when the record is incomplete or the use is commercial, promotional, or closely reproduces a protected character design.
 
 ## Tech
 

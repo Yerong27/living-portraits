@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { FloatingPortrait } from "./FloatingPortrait";
-import { AnimatedPortrait, usePoetryPortrait } from "./portrait-motion";
+import { AnimatedPortrait, useLivingPortrait } from "./portrait-motion";
 import { emilyPortrait } from "./portrait";
 
 type DemoMode = "stage" | "floating";
 
 function StageDemo({ chineseOutput }: { chineseOutput: boolean }) {
-  const { quote, hasSpoken, motion, speak } = usePoetryPortrait(emilyPortrait);
+  const { response, hasSpoken, motion, speak } = useLivingPortrait(emilyPortrait);
 
   return (
     <section className="hero" id="top">
@@ -32,13 +32,13 @@ function StageDemo({ chineseOutput }: { chineseOutput: boolean }) {
       <div className="poetry-room">
         <div className={`quote-card ${hasSpoken ? "is-awake" : ""}`} aria-live="polite">
           <span className="quote-mark" aria-hidden="true">“</span>
-          <blockquote>{hasSpoken ? quote.line : "Would you like a line?"}</blockquote>
+          <blockquote>{hasSpoken ? response.line : "Would you like a line?"}</blockquote>
           {hasSpoken ? (
             <div className="quote-notes">
-              {chineseOutput ? <p className="meaning">{quote.meaning}</p> : null}
+              {chineseOutput ? <p className="meaning">{response.meaning}</p> : null}
               <p className="attribution">
-                Emily Dickinson · {quote.title}
-                <a href={quote.source} target="_blank" rel="noreferrer">查看原诗 ↗</a>
+                Emily Dickinson · {response.title}
+                <a href={response.source} target="_blank" rel="noreferrer">查看原诗 ↗</a>
               </p>
             </div>
           ) : (
@@ -65,18 +65,18 @@ function FloatingDemo({ chineseOutput }: { chineseOutput: boolean }) {
     <>
       <section className="article-demo" id="top">
         <p className="eyebrow">Effect 02 · Floating companion</p>
-        <h1>A quiet companion<br /><em>beside your writing.</em></h1>
+        <h1>A quiet companion<br /><em>beside what you love.</em></h1>
         <div className="article-grid">
           <article>
             <p className="article-kicker">Field notes · July 2026</p>
             <h2>Why a personal website should still feel personal</h2>
             <p>
-              A personal site can be more than a sequence of documents. Small, responsive details
-              give it memory, temperament, and a sense that someone lives behind the page.
+              A personal site can be more than a sequence of documents. A writer, musician,
+              screen icon, fictional character, or original creation can give it temperament.
             </p>
             <p>
-              Emily floats above the layout rather than occupying a content card. Drag her anywhere;
-              click without moving to receive a line. Her last position is remembered on this device.
+              Emily is the first example, not the boundary. Each portrait can respond with licensed
+              or public-domain lines, original dialogue, facts, or another interaction you design.
             </p>
           </article>
           <aside>

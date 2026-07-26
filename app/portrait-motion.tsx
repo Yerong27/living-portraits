@@ -11,12 +11,12 @@ export const motions = {
 
 export type Motion = keyof typeof motions;
 
-export function usePoetryPortrait(portrait: Portrait) {
-  const [quoteIndex, setQuoteIndex] = useState(0);
+export function useLivingPortrait(portrait: Portrait) {
+  const [responseIndex, setResponseIndex] = useState(0);
   const [motion, setMotion] = useState<Motion>("idle");
   const [hasSpoken, setHasSpoken] = useState(false);
   const timers = useRef<number[]>([]);
-  const quoteCount = portrait.quotes.length;
+  const responseCount = portrait.responses.length;
 
   useEffect(() => {
     const activeTimers = timers.current;
@@ -27,9 +27,9 @@ export function usePoetryPortrait(portrait: Portrait) {
     timers.current.forEach(window.clearTimeout);
     timers.current = [];
 
-    setQuoteIndex((current) => {
-      const jump = quoteCount > 1 ? 1 + Math.floor(Math.random() * (quoteCount - 1)) : 0;
-      return (current + jump) % quoteCount;
+    setResponseIndex((current) => {
+      const jump = responseCount > 1 ? 1 + Math.floor(Math.random() * (responseCount - 1)) : 0;
+      return (current + jump) % responseCount;
     });
     setHasSpoken(true);
     setMotion("wave");
@@ -38,10 +38,10 @@ export function usePoetryPortrait(portrait: Portrait) {
       window.setTimeout(() => setMotion("read"), 620),
       window.setTimeout(() => setMotion("idle"), 2200),
     );
-  }, [quoteCount]);
+  }, [responseCount]);
 
   return {
-    quote: portrait.quotes[quoteIndex],
+    response: portrait.responses[responseIndex],
     hasSpoken,
     motion,
     speak,

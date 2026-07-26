@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import { AnimatedPortrait, usePoetryPortrait } from "./portrait-motion";
+import { AnimatedPortrait, useLivingPortrait } from "./portrait-motion";
 import type { Portrait } from "./portrait";
 
 type Point = { x: number; y: number };
@@ -23,7 +23,7 @@ export function FloatingPortrait({
   portrait: Portrait;
   chineseOutput: boolean;
 }) {
-  const { quote, hasSpoken, motion, speak } = usePoetryPortrait(portrait);
+  const { response, hasSpoken, motion, speak } = useLivingPortrait(portrait);
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
   const [bubbleOpen, setBubbleOpen] = useState(false);
   const [dragging, setDragging] = useState(false);
@@ -119,10 +119,10 @@ export function FloatingPortrait({
           >
             ×
           </button>
-          <blockquote>{quote.line}</blockquote>
-          {chineseOutput ? <p className="meaning">{quote.meaning}</p> : null}
-          <a href={quote.source} target="_blank" rel="noreferrer">
-            {quote.title} ↗
+          <blockquote>{response.line}</blockquote>
+          {chineseOutput ? <p className="meaning">{response.meaning}</p> : null}
+          <a href={response.source} target="_blank" rel="noreferrer">
+            {response.title} ↗
           </a>
         </div>
       ) : null}

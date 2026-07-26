@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
 
-const title = "Living Portraits — Interactive Literary Companions";
-const description = "Click or drag an animated Emily Dickinson and receive a line of poetry.";
+const title = "Living Portraits — Interactive Character Companions";
+const description = "Create draggable, expressive character companions for any personal website.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();

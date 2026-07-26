@@ -42,14 +42,17 @@ test("server-renders the Living Portraits stage", async () => {
 });
 
 test("ships a configurable and draggable floating portrait", async () => {
-  const [portrait, floating, page, readme] = await Promise.all([
+  const [portrait, floating, page, readme, rights] = await Promise.all([
     readFile(new URL("../app/portrait.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/FloatingPortrait.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
+    readFile(new URL("../RIGHTS.md", import.meta.url), "utf8"),
   ]);
 
   assert.match(portrait, /chineseOutput:\s*true/);
+  assert.match(portrait, /characterBasis:\s*"historical-person"/);
+  assert.match(portrait, /responses:\s*\[/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
   assert.match(floating, /setPointerCapture/);
   assert.match(floating, /localStorage\.setItem/);
@@ -59,6 +62,9 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.doesNotMatch(page, /再听一句/);
   assert.match(readme, /chineseOutput: true/);
   assert.match(readme, /Floating companion/);
+  assert.match(readme, /Interactive character companions/);
+  assert.match(rights, /Current record: Emily Dickinson/);
+  assert.match(rights, /public-domain book character depicted like a later film adaptation/);
 
   await access(new URL("../public/emily-spritesheet.webp", import.meta.url));
   await access(new URL("../public/og.png", import.meta.url));
