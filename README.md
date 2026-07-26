@@ -1,98 +1,81 @@
-# vinext-starter
+# Living Portraits
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Small animated literary companions for the web. Click a portrait and it responds with a line from its work.
 
-## Prerequisites
+The first portrait is **Emily Dickinson**: an 8 × 11 animated sprite atlas with six attributed quotations, short Chinese reflections, responsive interaction, keyboard support, and reduced-motion support.
 
-- Node.js `>=22.13.0`
+**[Live demo — Emily at the Window](https://emily-at-the-window.liyerongvv.chatgpt.site)**  
+The current Sites demo may ask you to sign in. The repository itself is public and runs locally without an account.
 
-## Quick Start
+## What is included
+
+- A reusable React portrait configuration in [`app/portrait.ts`](app/portrait.ts)
+- Sprite animation and interaction logic in [`app/page.tsx`](app/page.tsx)
+- The Emily sprite atlas in [`public/emily-spritesheet.webp`](public/emily-spritesheet.webp)
+- A responsive editorial-style presentation
+- Six non-repeating, source-linked Emily Dickinson excerpts
+- A Cloudflare-compatible vinext build
+
+## Run locally
+
+You need Node.js 22.13 or newer.
 
 ```bash
+git clone https://github.com/Yerong27/living-portraits.git
+cd living-portraits
 npm install
 npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+Before opening a pull request or deploying a fork:
+
+```bash
+npm run lint
 npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+## Make your own portrait
 
-## Included Shape
+Yes—forking is an intended use of this project.
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+1. Replace `public/emily-spritesheet.webp` with your own transparent sprite atlas.
+2. Edit `app/portrait.ts` with the character name, sprite path, quotations, notes, and source links.
+3. Change the presentation copy in `app/page.tsx` and the page metadata in `app/layout.tsx`.
+4. Adjust the sprite geometry in `app/globals.css` if your atlas does not use 192 × 208 px cells.
+5. Run the checks above, then deploy to your preferred React-compatible host.
 
-## Workspace Auth Headers
+The included atlas uses this row contract:
 
-OpenAI workspace sites can read the current user's email from
-`oai-authenticated-user-email`.
+| Row | Motion | Frames used |
+| --- | --- | --- |
+| 0 | Idle | 6 |
+| 3 | Wave | 4 |
+| 8 | Read / review | 6 |
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
+The source atlas contains additional Codex pet motions and look directions, so future portraits can add richer pointer, focus, or scroll reactions without replacing the format.
 
-Treat the full name as optional and fall back to email when it is absent:
+## Adding more characters
 
-```tsx
-import { headers } from "next/headers";
+`Living Portraits` is deliberately broader than a single Emily project. A natural next step is to turn `app/portrait.ts` into a collection and select a portrait by route, for example:
 
-export default async function Home() {
-  const requestHeaders = await headers();
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```text
+/emily-dickinson
+/jane-austen
+/walt-whitman
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+Keep each character's quotations, attribution links, and sprite path together. This makes it easier to review rights and sources when the collection grows.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+## Content and reuse
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+Emily Dickinson's original poems are in the public domain. The interface uses short excerpts and links to the source poem at the Poetry Foundation or Academy of American Poets. The Chinese lines are original interpretive paraphrases rather than published translations.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+When creating another portrait, verify the rights for its writing, translations, likeness, and artwork. Public-domain status varies by author, country, edition, and type of asset.
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+The project code and included generated interface assets are available under the [MIT License](LICENSE).
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+## Tech
 
-## Useful Commands
-
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
-
-## Learn More
-
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+React 19 · Next.js-compatible app router · vinext · TypeScript · CSS sprite animation

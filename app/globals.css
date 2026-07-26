@@ -279,7 +279,6 @@ blockquote {
   width: 192px;
   height: 208px;
   margin-bottom: 15px;
-  background-image: url("/emily-spritesheet.webp");
   background-repeat: no-repeat;
   background-size: 1536px 2288px;
   background-position: var(--sprite-x) var(--sprite-y);
