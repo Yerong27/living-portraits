@@ -1,0 +1,393 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #24221f;
+  --muted: #6f685f;
+  --paper: #f2ecde;
+  --paper-deep: #e8decb;
+  --wine: #6d2f3f;
+  --blue: #53646d;
+  --line: rgba(57, 48, 39, 0.25);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button, a { font: inherit; }
+
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--wine);
+  outline-offset: 5px;
+}
+
+.page-shell {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, transparent 49.92%, rgba(86, 66, 48, 0.055) 50%, transparent 50.08%),
+    var(--paper);
+}
+
+.paper-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.18;
+  background-image:
+    repeating-radial-gradient(circle at 24% 18%, rgba(48, 40, 31, 0.18) 0 0.45px, transparent 0.6px 4px),
+    repeating-linear-gradient(102deg, rgba(255,255,255,.28) 0 1px, transparent 1px 5px);
+  mix-blend-mode: multiply;
+}
+
+.masthead {
+  width: min(1240px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 28px 0 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.wordmark {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  font-variant: small-caps;
+  font-weight: 700;
+}
+
+.issue {
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero {
+  width: min(1240px, calc(100% - 64px));
+  min-height: calc(100svh - 130px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(330px, 0.86fr) minmax(520px, 1.14fr);
+  align-items: center;
+  gap: clamp(36px, 6vw, 108px);
+  padding: 50px 0 62px;
+  position: relative;
+  z-index: 1;
+}
+
+.intro { padding-left: clamp(0px, 3vw, 36px); }
+
+.eyebrow {
+  margin: 0 0 22px;
+  color: var(--wine);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  max-width: 650px;
+  font-size: clamp(55px, 6.1vw, 94px);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+}
+
+h1 em {
+  color: var(--wine);
+  font-weight: 400;
+}
+
+.lede {
+  max-width: 530px;
+  margin: 34px 0 0;
+  color: #504a43;
+  font-family: "Songti SC", "STSong", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.95;
+}
+
+.instruction {
+  margin-top: 42px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.instruction-line { width: 52px; height: 1px; background: var(--wine); }
+
+.poetry-room {
+  min-height: 610px;
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(245px, auto) 300px auto;
+  align-items: end;
+  border: 1px solid rgba(64, 54, 44, 0.28);
+  background: rgba(247, 242, 231, 0.66);
+  box-shadow: 16px 18px 0 rgba(91, 73, 55, 0.08);
+}
+
+.poetry-room::before,
+.poetry-room::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.poetry-room::before {
+  inset: 10px;
+  border: 1px solid rgba(93, 71, 51, 0.1);
+}
+
+.poetry-room::after {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--wine);
+  border-radius: 50%;
+  left: 22px;
+  top: 22px;
+}
+
+.quote-card {
+  align-self: stretch;
+  padding: 45px 52px 22px;
+  position: relative;
+  z-index: 2;
+}
+
+.quote-mark {
+  position: absolute;
+  left: 25px;
+  top: 22px;
+  color: rgba(109, 47, 63, 0.26);
+  font-size: 72px;
+  line-height: 1;
+}
+
+blockquote {
+  min-height: 82px;
+  margin: 0;
+  white-space: pre-line;
+  font-size: clamp(24px, 2.6vw, 38px);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.quote-card.is-awake blockquote { animation: inkIn 420ms ease both; }
+
+.waiting, .meaning {
+  margin: 13px 0 0;
+  color: var(--muted);
+  font-family: "Songti SC", "STSong", Georgia, serif;
+  font-size: 14px;
+}
+
+.quote-notes { animation: inkIn 500ms 80ms ease both; }
+
+.meaning { color: #4c5960; line-height: 1.7; }
+
+.attribution {
+  margin: 15px 0 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.attribution a {
+  flex: none;
+  color: var(--wine);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(109, 47, 63, 0.35);
+}
+
+.pet-stage {
+  height: 300px;
+  position: relative;
+  display: grid;
+  place-items: end center;
+  overflow: hidden;
+}
+
+.window-light {
+  position: absolute;
+  inset: 3px 3px 0;
+  background:
+    linear-gradient(90deg, transparent 49.6%, rgba(82, 68, 54, 0.16) 50%, transparent 50.4%),
+    linear-gradient(0deg, transparent 50%, rgba(82, 68, 54, 0.13) 50.3%, transparent 50.7%),
+    radial-gradient(ellipse at 50% 100%, rgba(212, 192, 146, 0.64), transparent 66%),
+    linear-gradient(180deg, rgba(199, 212, 211, 0.5), rgba(240, 224, 185, 0.12));
+  clip-path: polygon(9% 0, 91% 0, 100% 100%, 0 100%);
+}
+
+.window-light::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0 45px, rgba(57, 48, 40, .035) 46px 47px);
+}
+
+.pet-button {
+  width: 240px;
+  height: 272px;
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: end center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pet-sprite {
+  display: block;
+  width: 192px;
+  height: 208px;
+  margin-bottom: 15px;
+  background-image: url("/emily-spritesheet.webp");
+  background-repeat: no-repeat;
+  background-size: 1536px 2288px;
+  background-position: var(--sprite-x) var(--sprite-y);
+  transform: scale(1.22);
+  transform-origin: bottom center;
+  filter: drop-shadow(0 12px 8px rgba(36, 29, 22, 0.16));
+  transition: filter 180ms ease, transform 180ms ease;
+}
+
+.pet-button:hover .pet-sprite { transform: scale(1.26) translateY(-3px); filter: drop-shadow(0 15px 9px rgba(36, 29, 22, 0.2)); }
+.pet-button:active .pet-sprite { transform: scale(1.18) translateY(2px); }
+
+.pet-ring {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  left: 10px;
+  bottom: 17px;
+  border: 1px solid rgba(109, 47, 63, 0.22);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.76);
+  transition: opacity 200ms ease, transform 300ms ease;
+}
+
+.pet-button:hover .pet-ring { opacity: 1; transform: scale(1); }
+
+.floor-shadow {
+  width: 210px;
+  height: 22px;
+  position: absolute;
+  z-index: 1;
+  bottom: 11px;
+  border-radius: 50%;
+  background: rgba(72, 54, 40, 0.16);
+  filter: blur(8px);
+}
+
+.another-line {
+  width: calc(100% - 44px);
+  margin: 0 22px 22px;
+  padding: 15px 18px;
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(70, 57, 46, 0.3);
+  background: rgba(242, 236, 222, 0.72);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: "Songti SC", "STSong", Georgia, serif;
+  font-size: 13px;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.another-line:hover { background: var(--wine); color: #f8f2e8; border-color: var(--wine); }
+
+footer {
+  width: min(1240px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 18px 0 24px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  color: var(--muted);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+footer p { margin: 0; }
+
+@keyframes inkIn {
+  from { opacity: 0; transform: translateY(5px); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@media (max-width: 900px) {
+  .masthead, .hero, footer { width: min(680px, calc(100% - 34px)); }
+  .hero { grid-template-columns: 1fr; gap: 42px; padding-top: 52px; }
+  .intro { padding-left: 0; }
+  h1 { font-size: clamp(53px, 14vw, 82px); }
+  .poetry-room { min-height: 585px; }
+  footer { margin-top: 42px; }
+}
+
+@media (max-width: 560px) {
+  .masthead { padding-top: 21px; }
+  .issue { display: none; }
+  .hero { width: calc(100% - 24px); padding-top: 42px; }
+  .intro { padding: 0 8px; }
+  h1 { font-size: clamp(48px, 15vw, 70px); }
+  .lede { margin-top: 26px; font-size: 15px; }
+  .instruction { margin-top: 30px; }
+  .poetry-room { grid-template-rows: minmax(235px, auto) 265px auto; min-height: 560px; }
+  .quote-card { padding: 42px 27px 18px; }
+  .quote-mark { left: 13px; top: 15px; }
+  blockquote { font-size: clamp(23px, 7vw, 31px); min-height: 72px; }
+  .attribution { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .pet-stage { height: 265px; }
+  .pet-sprite { transform: scale(1.08); }
+  .pet-button:hover .pet-sprite { transform: scale(1.11) translateY(-2px); }
+  footer { width: calc(100% - 34px); flex-direction: column; line-height: 1.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
