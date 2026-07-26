@@ -8,12 +8,14 @@ export type Quote = {
 export type Portrait = {
   name: string;
   sprite: string;
+  chineseOutput: boolean;
   quotes: readonly Quote[];
 };
 
 export const emilyPortrait: Portrait = {
   name: "Emily Dickinson",
   sprite: "/emily-spritesheet.webp",
+  chineseOutput: true,
   quotes: [
     {
       line: '“Hope” is the thing with feathers —',
