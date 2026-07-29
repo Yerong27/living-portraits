@@ -79,7 +79,7 @@ Set `chineseOutput: false` for English-only output. The live demo also exposes t
 
 ## Floating companion
 
-`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. Once focused, holding arrow keys or WASD moves the portrait continuously at 360 pixels per second, while Shift raises the speed to 620 pixels per second. While dragging or moving by keyboard, the portrait runs in the direction of travel and turns when the horizontal direction reverses. The last offset is stored only in the visitor's browser.
+`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. Once focused, holding arrow keys or WASD moves the portrait continuously at 360 pixels per second, while Shift raises the speed to 620 pixels per second. Horizontal movement uses the directional running rows; vertical movement combines the v2 up/down look cells with a restrained stepping bob, so Emily visibly faces the direction of travel. The last offset is stored only in the visitor's browser.
 
 Focusing or moving the portrait enters a lightweight presentation state: the underlying page is softened, desaturated, and brightened while the portrait and response remain crisp. Clicking elsewhere or pressing Escape exits the state.
 

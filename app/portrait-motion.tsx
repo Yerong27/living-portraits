@@ -7,6 +7,24 @@ export const motions = {
   idle: { row: 0, frames: 6, speed: 260 },
   runningRight: { row: 1, frames: 8, speed: 120 },
   runningLeft: { row: 2, frames: 8, speed: 120 },
+  walkingUp: {
+    cells: [
+      { row: 9, column: 0 },
+      { row: 9, column: 1 },
+      { row: 9, column: 0 },
+      { row: 10, column: 7 },
+    ],
+    speed: 145,
+  },
+  walkingDown: {
+    cells: [
+      { row: 10, column: 0 },
+      { row: 9, column: 7 },
+      { row: 10, column: 0 },
+      { row: 10, column: 1 },
+    ],
+    speed: 145,
+  },
   wave: { row: 3, frames: 4, speed: 125 },
   read: { row: 8, frames: 6, speed: 185 },
 } as const;
@@ -55,22 +73,28 @@ export function useLivingPortrait(portrait: Portrait) {
 
 export function AnimatedPortrait({ portrait, motion }: { portrait: Portrait; motion: Motion }) {
   const [frame, setFrame] = useState(0);
+  const motionConfig = motions[motion];
+  const frameCount = "cells" in motionConfig ? motionConfig.cells.length : motionConfig.frames;
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const timer = window.setInterval(() => {
-      setFrame((current) => (current + 1) % motions[motion].frames);
-    }, motions[motion].speed);
+      setFrame((current) => (current + 1) % frameCount);
+    }, motionConfig.speed);
 
     return () => window.clearInterval(timer);
-  }, [motion]);
+  }, [frameCount, motionConfig.speed]);
+
+  const cell = "cells" in motionConfig
+    ? motionConfig.cells[frame % frameCount]
+    : { row: motionConfig.row, column: frame % frameCount };
 
   const style = {
-    "--sprite-x": `${(frame % motions[motion].frames) * -192}px`,
-    "--sprite-y": `${motions[motion].row * -208}px`,
+    "--sprite-x": `${cell.column * -192}px`,
+    "--sprite-y": `${cell.row * -208}px`,
     backgroundImage: `url(${portrait.sprite})`,
   } as CSSProperties;
 
-  return <span className="pet-sprite" style={style} aria-hidden="true" />;
+  return <span className="pet-sprite" data-motion={motion} style={style} aria-hidden="true" />;
 }

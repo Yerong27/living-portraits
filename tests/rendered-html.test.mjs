@@ -59,6 +59,11 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.equal((portrait.match(/^ {6}kind:\s*"quotation"/gm) ?? []).length, 10);
   assert.match(motion, /runningRight:\s*\{ row: 1, frames: 8/);
   assert.match(motion, /runningLeft:\s*\{ row: 2, frames: 8/);
+  assert.match(motion, /walkingUp:\s*\{/);
+  assert.match(motion, /\{ row: 9, column: 0 \}/);
+  assert.match(motion, /walkingDown:\s*\{/);
+  assert.match(motion, /\{ row: 10, column: 0 \}/);
+  assert.match(motion, /data-motion=\{motion\}/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
   assert.match(floating, /stepX > 1\) setOverrideMotion\("runningRight"\)/);
   assert.match(floating, /stepX < -1\) setOverrideMotion\("runningLeft"\)/);
@@ -74,6 +79,8 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(floating, /className="floating-figure"/);
   assert.match(floating, /arrowleft:\s*\{ x: -1, y: 0 \}/);
   assert.match(floating, /keyboardFast\.current \? 620 : 360/);
+  assert.match(floating, /return "walkingUp"/);
+  assert.match(floating, /return "walkingDown"/);
   assert.match(floating, /window\.requestAnimationFrame\(moveFromKeyboard\)/);
   assert.match(floating, /onKeyUp=\{onKeyUp\}/);
   assert.match(floating, /keyboardKeys\.current\.size === 0/);

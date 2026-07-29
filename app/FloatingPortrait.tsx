@@ -26,6 +26,13 @@ const keyboardDirections: Record<string, Point> = {
   s: { x: 0, y: 1 },
 };
 
+function motionForDirection(direction: Point): Motion {
+  if (direction.x < 0) return "runningLeft";
+  if (direction.x > 0) return "runningRight";
+  if (direction.y < 0) return "walkingUp";
+  return "walkingDown";
+}
+
 type DragState = {
   pointerId: number;
   startPointer: Point;
@@ -153,8 +160,8 @@ export function FloatingPortrait({
       x: Number(isPressed("arrowright", "d")) - Number(isPressed("arrowleft", "a")),
       y: Number(isPressed("arrowdown", "s")) - Number(isPressed("arrowup", "w")),
     };
-    if (direction.x) {
-      const nextMotion = direction.x < 0 ? "runningLeft" : "runningRight";
+    if (direction.x || direction.y) {
+      const nextMotion = motionForDirection(direction);
       if (lastKeyboardMotion.current !== nextMotion) {
         lastKeyboardMotion.current = nextMotion;
         setOverrideMotion(nextMotion);
@@ -445,8 +452,7 @@ export function FloatingPortrait({
       keyboardKeys.current.add(key);
       keyboardFast.current = event.shiftKey;
 
-      if (direction.x < 0) lastKeyboardMotion.current = "runningLeft";
-      if (direction.x > 0) lastKeyboardMotion.current = "runningRight";
+      lastKeyboardMotion.current = motionForDirection(direction);
       setOverrideMotion(lastKeyboardMotion.current);
       setDragging(true);
       keyboardPosition.current = offset;
