@@ -52,17 +52,24 @@ test("ships a configurable and draggable floating portrait", async () => {
   ]);
 
   assert.match(portrait, /chineseOutput:\s*true/);
+  assert.match(portrait, /id:\s*"emily-dickinson"/);
   assert.match(portrait, /characterBasis:\s*"historical-person"/);
+  assert.match(portrait, /translationSource:/);
   assert.match(portrait, /responses:\s*\[/);
+  assert.equal((portrait.match(/^ {6}kind:\s*"quotation"/gm) ?? []).length, 10);
   assert.match(motion, /runningRight:\s*\{ row: 1, frames: 8/);
   assert.match(motion, /runningLeft:\s*\{ row: 2, frames: 8/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
-  assert.match(floating, /stepX > 1\) setDragMotion\("runningRight"\)/);
-  assert.match(floating, /stepX < -1\) setDragMotion\("runningLeft"\)/);
-  assert.match(floating, /motion=\{dragMotion \?\? motion\}/);
+  assert.match(floating, /stepX > 1\) setOverrideMotion\("runningRight"\)/);
+  assert.match(floating, /stepX < -1\) setOverrideMotion\("runningLeft"\)/);
+  assert.match(floating, /motion=\{overrideMotion \?\? motion\}/);
   assert.match(floating, /setPointerCapture/);
   assert.match(floating, /localStorage\.setItem/);
   assert.match(floating, /event\.detail === 0/);
+  assert.match(floating, /onContextMenu/);
+  assert.match(floating, /holdTimer/);
+  assert.match(floating, /collapsedStorageKey/);
+  assert.match(floating, /floating-restore/);
   assert.match(page, /<FloatingPortrait/);
   assert.match(page, /setChineseOutput/);
   assert.doesNotMatch(page, /再听一句/);

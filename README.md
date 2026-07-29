@@ -52,6 +52,7 @@ A response can be a quotation, original line, or sourced fact:
 
 ```ts
 export const portrait = {
+  id: "your-character",
   name: "Your character",
   category: "original character",
   sprite: "/your-character.webp",
@@ -78,7 +79,9 @@ Set `chineseOutput: false` for English-only output. The live demo also exposes t
 
 ## Floating companion
 
-`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its bubble. While dragging, the portrait runs in the direction of travel and turns when the horizontal direction reverses. The last offset is stored only in the visitor's browser.
+`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. While dragging, the portrait runs in the direction of travel and turns when the horizontal direction reverses. The last offset is stored only in the visitor's browser.
+
+The response is typeset as transparent text beside the portrait rather than inside a conventional chat card. On desktop, right-click the portrait to open its close menu. On touch or pen, press and hold. Closing is remembered locally and leaves the character's handwritten name as a restore control. The response itself has no separate `×` button.
 
 ```tsx
 <FloatingPortrait
@@ -114,15 +117,9 @@ The interaction does not have to be a quotation. A character might offer an orig
 
 ## About the Chinese text
 
-The Emily Chinese lines were written specifically for this project. They were not copied from a published Chinese translation and are intentionally stored as `meaning`, not `translation`.
+The included Emily example uses short Chinese first-line translations documented in Xu Cuihua's *Compendium of Dickinson Poems Translated into Chinese* (2012), which records published Chinese translators and editions. The source record is linked from `app/portrait.ts` and summarized in `RIGHTS.md`.
 
-The process was:
-
-1. Read the English line in the context of its poem.
-2. Identify its central image or thought.
-3. Write a short, natural Chinese interpretation suited to a speech bubble.
-
-That means they are interpretive paraphrases rather than line-by-line scholarly translations. For example, “希望，是栖息在灵魂里的小鸟” combines the opening metaphor with the following image of the bird perching in the soul.
+The property remains named `meaning` so other portraits can use a translation, interpretation, localized note, or omit the second line entirely. When adapting the project, document the exact source and permission basis for any translated text rather than assuming that an English public-domain work makes a modern translation public domain too.
 
 ## Rights and reuse
 

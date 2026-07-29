@@ -14,7 +14,7 @@ export const motions = {
 export type Motion = keyof typeof motions;
 
 export function useLivingPortrait(portrait: Portrait) {
-  const [responseIndex, setResponseIndex] = useState(0);
+  const [responseIndex, setResponseIndex] = useState(-1);
   const [motion, setMotion] = useState<Motion>("idle");
   const [hasSpoken, setHasSpoken] = useState(false);
   const timers = useRef<number[]>([]);
@@ -30,8 +30,11 @@ export function useLivingPortrait(portrait: Portrait) {
     timers.current = [];
 
     setResponseIndex((current) => {
-      const jump = responseCount > 1 ? 1 + Math.floor(Math.random() * (responseCount - 1)) : 0;
-      return (current + jump) % responseCount;
+      if (responseCount <= 1) return 0;
+      if (current < 0) return Math.floor(Math.random() * responseCount);
+
+      const candidate = Math.floor(Math.random() * (responseCount - 1));
+      return candidate >= current ? candidate + 1 : candidate;
     });
     setHasSpoken(true);
     setMotion("wave");
@@ -43,7 +46,7 @@ export function useLivingPortrait(portrait: Portrait) {
   }, [responseCount]);
 
   return {
-    response: portrait.responses[responseIndex],
+    response: portrait.responses[responseIndex] ?? portrait.responses[0],
     hasSpoken,
     motion,
     speak,

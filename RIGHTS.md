@@ -99,7 +99,8 @@ Save licences, correspondence, screenshots, catalogue records, and source links 
 - **Basis:** historical person, 1830–1886.
 - **Appearance:** project-generated original illustration; it is not based on a screen adaptation or copied portrait asset.
 - **English text:** short excerpts from Dickinson poems first published in the nineteenth or early twentieth century. Longer additions should be transcribed from a confirmed public-domain edition because modern critical editions may contain protected editorial material.
-- **Chinese text:** original project-specific interpretive paraphrases, not quotations from a published Chinese translation.
+- **Chinese text:** short first-line translations documented in Xu Cuihua's *Compendium of Dickinson Poems Translated into Chinese* (2012), which records published Chinese translators and editions. Translation rights remain edition- and territory-specific; review before commercial reuse or longer quotation.
+- **Translation source:** https://edl.byu.edu/essays/2012XuCuihuaCompendiumofDickinsonPoemsTranslatedintoChinese.pdf
 - **Audio:** none.
 - **Branding:** no publisher, studio, estate, or institutional endorsement is claimed.
-- **Review date:** 2026-07-26.
+- **Review date:** 2026-07-29.

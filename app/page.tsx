@@ -82,7 +82,7 @@ function FloatingDemo({ chineseOutput }: { chineseOutput: boolean }) {
           <aside>
             <span>Try it</span>
             <strong>Drag Emily.<br />Then click her.</strong>
-            <p>The widget stays independent from the article beneath it.</p>
+            <p>Right-click or long-press to close her. Her position and visibility stay on this device.</p>
           </aside>
         </div>
       </section>
@@ -140,7 +140,7 @@ export default function Home() {
       )}
 
       <footer>
-        <p>Original verses by Emily Dickinson · Chinese notes are interpretive paraphrases.</p>
+        <p>Original verses by Emily Dickinson · Chinese first lines follow documented published translations.</p>
         <p>Amherst, imagined anew</p>
       </footer>
     </main>
