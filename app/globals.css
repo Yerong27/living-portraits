@@ -680,13 +680,14 @@ blockquote {
 
 .floating-pet-button:active { cursor: grabbing; }
 
-.floating-pet-button:focus-visible,
 .floating-restore:focus-visible,
 .floating-context-menu button:focus-visible,
 .floating-bubble > a:focus-visible {
   outline: 2px solid rgba(189, 87, 47, .72);
   outline-offset: 3px;
 }
+
+.floating-pet-button:focus-visible { outline: none; }
 
 .floating-pet-button .pet-sprite {
   margin-bottom: 8px;
@@ -695,6 +696,11 @@ blockquote {
 }
 
 .floating-pet-button:hover .pet-sprite { transform: scale(1.16) translateY(-2px); }
+.floating-pet-button:focus-visible .pet-sprite {
+  filter:
+    drop-shadow(0 0 6px rgba(189, 87, 47, .42))
+    drop-shadow(0 15px 10px rgba(36, 29, 22, .2));
+}
 .floating-portrait.is-dragging .pet-sprite { transform: scale(1.12); }
 
 footer {
