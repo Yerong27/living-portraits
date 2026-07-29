@@ -81,8 +81,8 @@ function FloatingDemo({ chineseOutput }: { chineseOutput: boolean }) {
           </article>
           <aside>
             <span>Try it</span>
-            <strong>Drag Emily.<br />Then click her.</strong>
-            <p>Right-click or long-press to close her. Her position and visibility stay on this device.</p>
+            <strong>Drag Emily.<br />Or use the keyboard.</strong>
+            <p>Click her first, then use arrow keys or WASD. Hold Shift to move faster; right-click or long-press to close.</p>
           </aside>
         </div>
       </section>

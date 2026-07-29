@@ -79,7 +79,7 @@ Set `chineseOutput: false` for English-only output. The live demo also exposes t
 
 ## Floating companion
 
-`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. While dragging, the portrait runs in the direction of travel and turns when the horizontal direction reverses. The last offset is stored only in the visitor's browser.
+`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. Once focused, arrow keys or WASD move the portrait, and holding Shift increases the step size. While dragging or moving by keyboard, the portrait runs in the direction of travel and turns when the horizontal direction reverses. The last offset is stored only in the visitor's browser.
 
 The response is typeset as transparent text beside the portrait rather than inside a conventional chat card. On desktop, right-click the portrait to open its close menu. On touch or pen, press and hold. Closing is remembered locally and leaves the character's handwritten name as a restore control. The response itself has no separate `×` button.
 

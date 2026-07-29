@@ -15,6 +15,17 @@ import type { Portrait } from "./portrait";
 
 type Point = { x: number; y: number };
 
+const keyboardDirections: Record<string, Point> = {
+  arrowleft: { x: -1, y: 0 },
+  a: { x: -1, y: 0 },
+  arrowright: { x: 1, y: 0 },
+  d: { x: 1, y: 0 },
+  arrowup: { x: 0, y: -1 },
+  w: { x: 0, y: -1 },
+  arrowdown: { x: 0, y: 1 },
+  s: { x: 0, y: 1 },
+};
+
 type DragState = {
   pointerId: number;
   startPointer: Point;
@@ -48,6 +59,8 @@ export function FloatingPortrait({
   const menuRef = useRef<HTMLDivElement>(null);
   const restoreRef = useRef<HTMLButtonElement>(null);
   const drag = useRef<DragState | null>(null);
+  const keyboardKeys = useRef(new Set<string>());
+  const lastKeyboardMotion = useRef<Motion>("runningRight");
   const restoreTimer = useRef<number | null>(null);
   const positionStorageKey = `living-portraits:position:floating:${portrait.id}`;
   const collapsedStorageKey = `living-portraits:collapsed:floating:${portrait.id}`;
@@ -216,6 +229,7 @@ export function FloatingPortrait({
     setBubbleOpen(false);
     setMenuOpen(false);
     setDragging(false);
+    keyboardKeys.current.clear();
     setOverrideMotion(null);
     setCollapsed(true);
     try {
@@ -339,10 +353,62 @@ export function FloatingPortrait({
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10")) return;
+    const key = event.key.toLowerCase();
+    const direction = keyboardDirections[key];
+
+    if (direction) {
+      event.preventDefault();
+      setMenuOpen(false);
+      keyboardKeys.current.add(key);
+
+      if (direction.x < 0) lastKeyboardMotion.current = "runningLeft";
+      if (direction.x > 0) lastKeyboardMotion.current = "runningRight";
+      setOverrideMotion(lastKeyboardMotion.current);
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      const distance = event.shiftKey ? 28 : 12;
+      const requestedX = direction.x * distance;
+      const requestedY = direction.y * distance;
+      const margin = 8;
+      const dx = Math.min(
+        window.innerWidth - margin - rect.right,
+        Math.max(margin - rect.left, requestedX),
+      );
+      const dy = Math.min(
+        window.innerHeight - margin - rect.bottom,
+        Math.max(margin - rect.top, requestedY),
+      );
+
+      setOffset((current) => {
+        const next = { x: current.x + dx, y: current.y + dy };
+        try {
+          window.localStorage.setItem(positionStorageKey, JSON.stringify(next));
+        } catch {
+          // Keyboard movement remains available when browser storage is unavailable.
+        }
+        return next;
+      });
+      return;
+    }
+
+    if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) {
+      event.preventDefault();
+      const rect = event.currentTarget.getBoundingClientRect();
+      showContextMenu(rect.left + rect.width / 2, rect.top + 24);
+    }
+  };
+
+  const onKeyUp = (event: KeyboardEvent<HTMLButtonElement>) => {
+    const key = event.key.toLowerCase();
+    if (!keyboardDirections[key]) return;
     event.preventDefault();
-    const rect = event.currentTarget.getBoundingClientRect();
-    showContextMenu(rect.left + rect.width / 2, rect.top + 24);
+    keyboardKeys.current.delete(key);
+    if (keyboardKeys.current.size === 0) setOverrideMotion(null);
+  };
+
+  const finishKeyboardMovement = () => {
+    keyboardKeys.current.clear();
+    setOverrideMotion(null);
   };
 
   const widgetStyle = {
@@ -398,10 +464,12 @@ export function FloatingPortrait({
               onPointerCancel={(event) => finishPointer(event, true)}
               onContextMenu={onContextMenu}
               onKeyDown={onKeyDown}
+              onKeyUp={onKeyUp}
+              onBlur={finishKeyboardMovement}
               onClick={(event) => {
                 if (event.detail === 0) sayLine();
               }}
-              aria-label={`拖拽 ${portrait.name}，点击听一句诗，右键或长按关闭`}
+              aria-label={`拖拽或使用方向键与 WASD 移动 ${portrait.name}，点击听一句诗，右键或长按关闭`}
               aria-expanded={bubbleOpen}
             >
               <AnimatedPortrait portrait={portrait} motion={overrideMotion ?? motion} />

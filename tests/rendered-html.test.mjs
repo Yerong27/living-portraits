@@ -72,8 +72,13 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(floating, /floating-restore/);
   assert.match(floating, /querySelector<HTMLElement>\("\.pet-sprite"\)/);
   assert.match(floating, /className="floating-figure"/);
+  assert.match(floating, /arrowleft:\s*\{ x: -1, y: 0 \}/);
+  assert.match(floating, /const distance = event\.shiftKey \? 28 : 12/);
+  assert.match(floating, /onKeyUp=\{onKeyUp\}/);
+  assert.match(floating, /keyboardKeys\.current\.size === 0/);
   assert.match(page, /<FloatingPortrait/);
   assert.match(page, /setChineseOutput/);
+  assert.match(page, /arrow keys or WASD/);
   assert.doesNotMatch(page, /再听一句/);
   assert.match(readme, /chineseOutput: true/);
   assert.match(readme, /Floating companion/);
