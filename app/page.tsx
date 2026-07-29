@@ -82,7 +82,7 @@ function FloatingDemo({ chineseOutput }: { chineseOutput: boolean }) {
           <aside>
             <span>Try it</span>
             <strong>Drag Emily.<br />Or use the keyboard.</strong>
-            <p>Click her first, then use arrow keys or WASD. Hold Shift to move faster; right-click or long-press to close.</p>
+            <p>Click her first, then hold arrow keys or WASD. Hold Shift to sprint; the page softens while she is selected.</p>
           </aside>
         </div>
       </section>

@@ -52,6 +52,7 @@ export function FloatingPortrait({
   const [menuPoint, setMenuPoint] = useState<Point>({ x: 0, y: 0 });
   const [collapsed, setCollapsed] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [selected, setSelected] = useState(false);
   const [overrideMotion, setOverrideMotion] = useState<Motion | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -60,6 +61,10 @@ export function FloatingPortrait({
   const restoreRef = useRef<HTMLButtonElement>(null);
   const drag = useRef<DragState | null>(null);
   const keyboardKeys = useRef(new Set<string>());
+  const keyboardFrame = useRef<number | null>(null);
+  const keyboardLastTime = useRef<number | null>(null);
+  const keyboardFast = useRef(false);
+  const keyboardPosition = useRef<Point>({ x: 0, y: 0 });
   const lastKeyboardMotion = useRef<Motion>("runningRight");
   const restoreTimer = useRef<number | null>(null);
   const positionStorageKey = `living-portraits:position:floating:${portrait.id}`;
@@ -135,6 +140,61 @@ export function FloatingPortrait({
     });
   }, [collapsed, positionStorageKey]);
 
+  const moveFromKeyboard = useCallback(function frame(timestamp: number) {
+    const trigger = triggerRef.current;
+    if (!trigger || keyboardKeys.current.size === 0) {
+      keyboardFrame.current = null;
+      keyboardLastTime.current = null;
+      return;
+    }
+
+    const isPressed = (...keys: string[]) => keys.some((key) => keyboardKeys.current.has(key));
+    const direction = {
+      x: Number(isPressed("arrowright", "d")) - Number(isPressed("arrowleft", "a")),
+      y: Number(isPressed("arrowdown", "s")) - Number(isPressed("arrowup", "w")),
+    };
+    if (direction.x) {
+      const nextMotion = direction.x < 0 ? "runningLeft" : "runningRight";
+      if (lastKeyboardMotion.current !== nextMotion) {
+        lastKeyboardMotion.current = nextMotion;
+        setOverrideMotion(nextMotion);
+      }
+    }
+    const elapsed = keyboardLastTime.current === null
+      ? 0
+      : Math.min((timestamp - keyboardLastTime.current) / 1000, 0.05);
+    keyboardLastTime.current = timestamp;
+
+    if (elapsed > 0 && (direction.x || direction.y)) {
+      const rect = trigger.getBoundingClientRect();
+      const speed = keyboardFast.current ? 620 : 360;
+      const magnitude = Math.hypot(direction.x, direction.y) || 1;
+      const requestedX = direction.x / magnitude * speed * elapsed;
+      const requestedY = direction.y / magnitude * speed * elapsed;
+      const margin = 8;
+      const dx = Math.min(
+        window.innerWidth - margin - rect.right,
+        Math.max(margin - rect.left, requestedX),
+      );
+      const dy = Math.min(
+        window.innerHeight - margin - rect.bottom,
+        Math.max(margin - rect.top, requestedY),
+      );
+
+      setOffset((current) => {
+        const next = { x: current.x + dx, y: current.y + dy };
+        keyboardPosition.current = next;
+        return next;
+      });
+    }
+
+    keyboardFrame.current = window.requestAnimationFrame(frame);
+  }, []);
+
+  useEffect(() => {
+    keyboardPosition.current = offset;
+  }, [offset]);
+
   useEffect(() => {
     let savedOffset: Point | null = null;
     let shouldCollapse = false;
@@ -189,12 +249,15 @@ export function FloatingPortrait({
 
   useEffect(() => {
     const closeMenu = (event: globalThis.PointerEvent) => {
-      if (!menuRef.current?.contains(event.target as Node)) setMenuOpen(false);
+      const target = event.target as Node;
+      if (!menuRef.current?.contains(target)) setMenuOpen(false);
+      if (!wrapperRef.current?.contains(target)) setSelected(false);
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
-        triggerRef.current?.focus({ preventScroll: true });
+        setSelected(false);
+        triggerRef.current?.blur();
       }
     };
     const onResize = () => {
@@ -211,6 +274,7 @@ export function FloatingPortrait({
       document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", onResize);
       if (restoreTimer.current !== null) window.clearTimeout(restoreTimer.current);
+      if (keyboardFrame.current !== null) window.cancelAnimationFrame(keyboardFrame.current);
     };
   }, [clampToViewport, positionBubble]);
 
@@ -225,12 +289,28 @@ export function FloatingPortrait({
     setMenuOpen(false);
   };
 
+  const finishKeyboardMovement = () => {
+    keyboardKeys.current.clear();
+    keyboardFast.current = false;
+    keyboardLastTime.current = null;
+    if (keyboardFrame.current !== null) {
+      window.cancelAnimationFrame(keyboardFrame.current);
+      keyboardFrame.current = null;
+    }
+    setDragging(false);
+    setOverrideMotion(null);
+    try {
+      window.localStorage.setItem(positionStorageKey, JSON.stringify(keyboardPosition.current));
+    } catch {
+      // Keyboard movement remains available when browser storage is unavailable.
+    }
+  };
+
   const collapsePortrait = () => {
     setBubbleOpen(false);
     setMenuOpen(false);
-    setDragging(false);
-    keyboardKeys.current.clear();
-    setOverrideMotion(null);
+    finishKeyboardMovement();
+    setSelected(false);
     setCollapsed(true);
     try {
       window.localStorage.setItem(collapsedStorageKey, "true");
@@ -261,6 +341,8 @@ export function FloatingPortrait({
     const rect = triggerRef.current?.getBoundingClientRect();
     if (!rect) return;
 
+    finishKeyboardMovement();
+    setSelected(true);
     setMenuOpen(false);
     event.currentTarget.setPointerCapture(event.pointerId);
     drag.current = {
@@ -358,38 +440,24 @@ export function FloatingPortrait({
 
     if (direction) {
       event.preventDefault();
+      setSelected(true);
       setMenuOpen(false);
       keyboardKeys.current.add(key);
+      keyboardFast.current = event.shiftKey;
 
       if (direction.x < 0) lastKeyboardMotion.current = "runningLeft";
       if (direction.x > 0) lastKeyboardMotion.current = "runningRight";
       setOverrideMotion(lastKeyboardMotion.current);
-
-      const rect = event.currentTarget.getBoundingClientRect();
-      const distance = event.shiftKey ? 28 : 12;
-      const requestedX = direction.x * distance;
-      const requestedY = direction.y * distance;
-      const margin = 8;
-      const dx = Math.min(
-        window.innerWidth - margin - rect.right,
-        Math.max(margin - rect.left, requestedX),
-      );
-      const dy = Math.min(
-        window.innerHeight - margin - rect.bottom,
-        Math.max(margin - rect.top, requestedY),
-      );
-
-      setOffset((current) => {
-        const next = { x: current.x + dx, y: current.y + dy };
-        try {
-          window.localStorage.setItem(positionStorageKey, JSON.stringify(next));
-        } catch {
-          // Keyboard movement remains available when browser storage is unavailable.
-        }
-        return next;
-      });
+      setDragging(true);
+      keyboardPosition.current = offset;
+      if (keyboardFrame.current === null) {
+        keyboardLastTime.current = null;
+        keyboardFrame.current = window.requestAnimationFrame(moveFromKeyboard);
+      }
       return;
     }
+
+    if (key === "shift") keyboardFast.current = true;
 
     if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) {
       event.preventDefault();
@@ -400,15 +468,22 @@ export function FloatingPortrait({
 
   const onKeyUp = (event: KeyboardEvent<HTMLButtonElement>) => {
     const key = event.key.toLowerCase();
+    if (key === "shift") {
+      keyboardFast.current = false;
+      return;
+    }
     if (!keyboardDirections[key]) return;
     event.preventDefault();
     keyboardKeys.current.delete(key);
-    if (keyboardKeys.current.size === 0) setOverrideMotion(null);
+    keyboardFast.current = event.shiftKey;
+    if (keyboardKeys.current.size === 0) finishKeyboardMovement();
   };
 
-  const finishKeyboardMovement = () => {
-    keyboardKeys.current.clear();
-    setOverrideMotion(null);
+  const onPortraitBlur = () => {
+    finishKeyboardMovement();
+    window.requestAnimationFrame(() => {
+      if (!wrapperRef.current?.contains(document.activeElement)) setSelected(false);
+    });
   };
 
   const widgetStyle = {
@@ -417,11 +492,13 @@ export function FloatingPortrait({
   } as CSSProperties;
 
   return (
-    <div
-      ref={wrapperRef}
-      className={`floating-portrait ${dragging ? "is-dragging" : ""} ${collapsed ? "is-collapsed" : ""}`}
-      style={widgetStyle}
-    >
+    <>
+      {selected && !collapsed ? <div className="floating-demo-backdrop" aria-hidden="true" /> : null}
+      <div
+        ref={wrapperRef}
+        className={`floating-portrait ${dragging ? "is-dragging" : ""} ${selected ? "is-selected" : ""} ${collapsed ? "is-collapsed" : ""}`}
+        style={widgetStyle}
+      >
       {collapsed ? (
         <button
           ref={restoreRef}
@@ -465,7 +542,8 @@ export function FloatingPortrait({
               onContextMenu={onContextMenu}
               onKeyDown={onKeyDown}
               onKeyUp={onKeyUp}
-              onBlur={finishKeyboardMovement}
+              onFocus={() => setSelected(true)}
+              onBlur={onPortraitBlur}
               onClick={(event) => {
                 if (event.detail === 0) sayLine();
               }}
@@ -477,6 +555,7 @@ export function FloatingPortrait({
           </div>
         </>
       )}
-    </div>
+      </div>
+    </>
   );
 }

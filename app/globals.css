@@ -480,6 +480,17 @@ blockquote {
   line-height: 1.6;
 }
 
+.floating-demo-backdrop {
+  position: fixed;
+  z-index: 29;
+  inset: 0;
+  background: rgba(250, 248, 242, .54);
+  backdrop-filter: blur(3px) saturate(.68);
+  -webkit-backdrop-filter: blur(3px) saturate(.68);
+  pointer-events: none;
+  animation: focusBackdropIn 180ms ease both;
+}
+
 .floating-portrait {
   --drag-x: 0px;
   --drag-y: 0px;
@@ -501,6 +512,10 @@ blockquote {
 
 .floating-portrait.is-dragging {
   filter: drop-shadow(0 16px 14px rgba(43, 33, 25, .18));
+}
+
+.floating-portrait.is-selected .pet-sprite {
+  filter: drop-shadow(0 15px 10px rgba(36, 29, 22, .22));
 }
 
 .floating-bubble {
@@ -702,6 +717,11 @@ footer p { margin: 0; }
 @keyframes inkIn {
   from { opacity: 0; transform: translateY(5px); filter: blur(2px); }
   to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes focusBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 900px) {
