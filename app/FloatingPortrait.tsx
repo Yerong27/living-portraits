@@ -61,8 +61,10 @@ export function FloatingPortrait({
     const margin = 10;
     const gap = window.innerWidth <= 700 ? 6 : 9;
     const rootRect = root.getBoundingClientRect();
-    const portraitRect = trigger.getBoundingClientRect();
-    const bubbleRect = bubble.getBoundingClientRect();
+    const sprite = trigger.querySelector<HTMLElement>(".pet-sprite");
+    const portraitRect = sprite?.getBoundingClientRect() ?? trigger.getBoundingClientRect();
+    root.style.removeProperty("--floating-poem-max-width");
+    let bubbleRect = bubble.getBoundingClientRect();
     const rightSpace = window.innerWidth - portraitRect.right;
     const leftSpace = portraitRect.left;
     let side = portraitRect.left + portraitRect.width / 2 >= window.innerWidth / 2 || rightSpace < 280
@@ -71,6 +73,15 @@ export function FloatingPortrait({
 
     if (side === "left" && leftSpace < bubbleRect.width + gap && rightSpace > leftSpace) side = "right";
     if (side === "right" && rightSpace < bubbleRect.width + gap && leftSpace > rightSpace) side = "left";
+
+    const availableSpace = side === "left" ? leftSpace : rightSpace;
+    if (availableSpace < bubbleRect.width + gap + margin) {
+      root.style.setProperty(
+        "--floating-poem-max-width",
+        `${Math.max(92, availableSpace - gap - margin)}px`,
+      );
+      bubbleRect = bubble.getBoundingClientRect();
+    }
 
     const preferredLeft = side === "left"
       ? portraitRect.left - bubbleRect.width - gap
@@ -376,24 +387,26 @@ export function FloatingPortrait({
             </div>
           ) : null}
 
-          <button
-            ref={triggerRef}
-            className="floating-pet-button"
-            type="button"
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={(event) => finishPointer(event)}
-            onPointerCancel={(event) => finishPointer(event, true)}
-            onContextMenu={onContextMenu}
-            onKeyDown={onKeyDown}
-            onClick={(event) => {
-              if (event.detail === 0) sayLine();
-            }}
-            aria-label={`拖拽 ${portrait.name}，点击听一句诗，右键或长按关闭`}
-            aria-expanded={bubbleOpen}
-          >
-            <AnimatedPortrait portrait={portrait} motion={overrideMotion ?? motion} />
-          </button>
+          <div className="floating-figure">
+            <button
+              ref={triggerRef}
+              className="floating-pet-button"
+              type="button"
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={(event) => finishPointer(event)}
+              onPointerCancel={(event) => finishPointer(event, true)}
+              onContextMenu={onContextMenu}
+              onKeyDown={onKeyDown}
+              onClick={(event) => {
+                if (event.detail === 0) sayLine();
+              }}
+              aria-label={`拖拽 ${portrait.name}，点击听一句诗，右键或长按关闭`}
+              aria-expanded={bubbleOpen}
+            >
+              <AnimatedPortrait portrait={portrait} motion={overrideMotion ?? motion} />
+            </button>
+          </div>
         </>
       )}
     </div>

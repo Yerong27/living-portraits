@@ -70,6 +70,8 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(floating, /holdTimer/);
   assert.match(floating, /collapsedStorageKey/);
   assert.match(floating, /floating-restore/);
+  assert.match(floating, /querySelector<HTMLElement>\("\.pet-sprite"\)/);
+  assert.match(floating, /className="floating-figure"/);
   assert.match(page, /<FloatingPortrait/);
   assert.match(page, /setChineseOutput/);
   assert.doesNotMatch(page, /再听一句/);

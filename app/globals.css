@@ -493,6 +493,7 @@ blockquote {
   right: clamp(12px, 3vw, 38px);
   bottom: 14px;
   z-index: 30;
+  isolation: isolate;
   pointer-events: none;
   transform: translate3d(var(--drag-x), var(--drag-y), 0);
   transition: filter 180ms ease;
@@ -503,7 +504,8 @@ blockquote {
 }
 
 .floating-bubble {
-  width: min(270px, calc(100vw - 24px));
+  width: max-content;
+  max-width: min(270px, calc(100vw - 24px), var(--floating-poem-max-width, 270px));
   margin: 0;
   padding: 0;
   position: absolute;
@@ -572,7 +574,7 @@ blockquote {
 
 .floating-context-menu {
   position: absolute;
-  z-index: 10;
+  z-index: 20;
   top: var(--floating-menu-top);
   left: var(--floating-menu-left);
   min-width: 0;
@@ -634,6 +636,14 @@ blockquote {
 .floating-portrait.is-collapsed {
   width: auto;
   height: auto;
+}
+
+.floating-figure {
+  width: 230px;
+  height: 260px;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
 }
 
 .floating-pet-button {
@@ -730,9 +740,10 @@ footer p { margin: 0; }
   .article-grid { margin-top: 52px; }
   .floating-portrait { right: 8px; bottom: 5px; width: 205px; height: 235px; }
   .floating-portrait.is-collapsed { width: auto; height: auto; }
-  .floating-bubble { width: min(248px, calc(100vw - 16px)); }
+  .floating-bubble { max-width: min(248px, calc(100vw - 16px), var(--floating-poem-max-width, 248px)); }
   .floating-bubble blockquote { font-size: 15px; }
   .floating-pet-button { width: 205px; height: 235px; }
+  .floating-figure { width: 205px; height: 235px; }
   .floating-pet-button .pet-sprite { transform: scale(1.02); }
   .floating-pet-button:hover .pet-sprite { transform: scale(1.05) translateY(-2px); }
   .floating-restore { font-size: 28px; }
