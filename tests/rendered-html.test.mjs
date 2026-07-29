@@ -35,7 +35,7 @@ test("server-renders the Living Portraits stage", async () => {
   assert.match(html, />悬浮宠物</);
   assert.match(html, />中文释义</);
   assert.match(html, /Would you like a line\?/);
-  assert.match(html, /emily-spritesheet\.webp/);
+  assert.match(html, /emily-web-spritesheet\.webp/);
   assert.match(html, /og\.png/);
   assert.doesNotMatch(html, /再听一句/);
   assert.doesNotMatch(html, /codex-preview/);
@@ -59,10 +59,8 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.equal((portrait.match(/^ {6}kind:\s*"quotation"/gm) ?? []).length, 10);
   assert.match(motion, /runningRight:\s*\{ row: 1, frames: 8/);
   assert.match(motion, /runningLeft:\s*\{ row: 2, frames: 8/);
-  assert.match(motion, /walkingUp:\s*\{/);
-  assert.match(motion, /\{ row: 9, column: 0 \}/);
-  assert.match(motion, /walkingDown:\s*\{/);
-  assert.match(motion, /\{ row: 10, column: 0 \}/);
+  assert.match(motion, /walkingUp:\s*\{ row: 9, frames: 8/);
+  assert.match(motion, /walkingDown:\s*\{ row: 10, frames: 8/);
   assert.match(motion, /data-motion=\{motion\}/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
   assert.match(floating, /stepX > 1\) setOverrideMotion\("runningRight"\)/);
@@ -96,5 +94,6 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(rights, /public-domain book character depicted like a later film adaptation/);
 
   await access(new URL("../public/emily-spritesheet.webp", import.meta.url));
+  await access(new URL("../public/emily-web-spritesheet.webp", import.meta.url));
   await access(new URL("../public/og.png", import.meta.url));
 });

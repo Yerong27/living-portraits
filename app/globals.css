@@ -696,10 +696,6 @@ blockquote {
 }
 
 .floating-pet-button:hover .pet-sprite { transform: scale(1.16) translateY(-2px); }
-.floating-pet-button .pet-sprite[data-motion="walkingUp"],
-.floating-pet-button .pet-sprite[data-motion="walkingDown"] {
-  animation: verticalStride 290ms ease-in-out infinite;
-}
 .floating-pet-button:focus-visible .pet-sprite {
   filter:
     drop-shadow(0 0 6px rgba(189, 87, 47, .42))
@@ -732,11 +728,6 @@ footer p { margin: 0; }
 @keyframes focusBackdropIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-@keyframes verticalStride {
-  0%, 100% { transform: scale(1.12) translateY(0); }
-  50% { transform: scale(1.12) translateY(-3px); }
 }
 
 @media (max-width: 900px) {

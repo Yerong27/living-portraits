@@ -79,7 +79,9 @@ Set `chineseOutput: false` for English-only output. The live demo also exposes t
 
 ## Floating companion
 
-`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. Once focused, holding arrow keys or WASD moves the portrait continuously at 360 pixels per second, while Shift raises the speed to 620 pixels per second. Horizontal movement uses the directional running rows; vertical movement combines the v2 up/down look cells with a restrained stepping bob, so Emily visibly faces the direction of travel. The last offset is stored only in the visitor's browser.
+`FloatingPortrait` is independent from the page underneath it. It supports mouse, pen, touch, and keyboard input and distinguishes a click from a drag with a movement threshold. A click selects a new non-repeating response; a drag moves the portrait without opening its text. Once focused, holding arrow keys or WASD moves the portrait continuously at 360 pixels per second, while Shift raises the speed to 620 pixels per second. Horizontal movement uses directional running rows; vertical movement uses separate eight-frame up-screen and down-screen walking cycles with alternating legs and shoes. The last offset is stored only in the visitor's browser.
+
+The repository keeps the Codex-compatible atlas (`public/emily-spritesheet.webp`) intact. The web demo uses `public/emily-web-spritesheet.webp`, whose final two rows are web-only vertical gait loops. This separation lets forks retain Codex's 16-direction look contract while giving a website character grounded four-way keyboard movement.
 
 Focusing or moving the portrait enters a lightweight presentation state: the underlying page is softened, desaturated, and brightened while the portrait and response remain crisp. Clicking elsewhere or pressing Escape exits the state.
 
@@ -103,6 +105,8 @@ The included atlas currently uses these rows:
 | 2 | Drag / run left | 8 |
 | 3 | Wave | 4 |
 | 8 | Respond / review | 6 |
+| 9 | Walk up-screen | 8 |
+| 10 | Walk down-screen | 8 |
 
 ## Where the project can go
 

@@ -28,7 +28,7 @@ export const emilyPortrait: Portrait = {
   id: "emily-dickinson",
   name: "Emily Dickinson",
   category: "historical writer",
-  sprite: "/emily-spritesheet.webp",
+  sprite: "/emily-web-spritesheet.webp",
   chineseOutput: true,
   rights: {
     characterBasis: "historical-person",
