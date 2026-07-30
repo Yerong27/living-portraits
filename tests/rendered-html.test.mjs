@@ -42,11 +42,12 @@ test("server-renders the Living Portraits stage", async () => {
 });
 
 test("ships a configurable and draggable floating portrait", async () => {
-  const [portrait, motion, floating, page, readme, rights] = await Promise.all([
+  const [portrait, motion, floating, page, styles, readme, rights] = await Promise.all([
     readFile(new URL("../app/portrait.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/portrait-motion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/FloatingPortrait.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../README.md", import.meta.url), "utf8"),
     readFile(new URL("../RIGHTS.md", import.meta.url), "utf8"),
   ]);
@@ -62,6 +63,7 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(motion, /walkingUp:\s*\{ row: 9, frames: 8/);
   assert.match(motion, /walkingDown:\s*\{/);
   assert.match(motion, /sprite:\s*"\/emily-web-down-spritesheet\.webp"/);
+  assert.doesNotMatch(styles, /data-motion="walkingDown"[^}]*scale\(/);
   assert.match(motion, /data-motion=\{motion\}/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
   assert.match(floating, /stepX > 1\) setOverrideMotion\("runningRight"\)/);
