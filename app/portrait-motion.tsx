@@ -8,7 +8,12 @@ export const motions = {
   runningRight: { row: 1, frames: 8, speed: 120 },
   runningLeft: { row: 2, frames: 8, speed: 120 },
   walkingUp: { row: 9, frames: 8, speed: 125 },
-  walkingDown: { row: 10, frames: 8, speed: 125 },
+  walkingDown: {
+    row: 10,
+    frames: 8,
+    speed: 125,
+    sprite: "/emily-web-down-spritesheet.webp",
+  },
   wave: { row: 3, frames: 4, speed: 125 },
   read: { row: 8, frames: 6, speed: 185 },
 } as const;
@@ -73,7 +78,7 @@ export function AnimatedPortrait({ portrait, motion }: { portrait: Portrait; mot
   const style = {
     "--sprite-x": `${(frame % frameCount) * -192}px`,
     "--sprite-y": `${motionConfig.row * -208}px`,
-    backgroundImage: `url(${portrait.sprite})`,
+    backgroundImage: `url(${"sprite" in motionConfig ? motionConfig.sprite : portrait.sprite})`,
   } as CSSProperties;
 
   return <span className="pet-sprite" data-motion={motion} style={style} aria-hidden="true" />;

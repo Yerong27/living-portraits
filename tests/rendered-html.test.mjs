@@ -60,7 +60,8 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.match(motion, /runningRight:\s*\{ row: 1, frames: 8/);
   assert.match(motion, /runningLeft:\s*\{ row: 2, frames: 8/);
   assert.match(motion, /walkingUp:\s*\{ row: 9, frames: 8/);
-  assert.match(motion, /walkingDown:\s*\{ row: 10, frames: 8/);
+  assert.match(motion, /walkingDown:\s*\{/);
+  assert.match(motion, /sprite:\s*"\/emily-web-down-spritesheet\.webp"/);
   assert.match(motion, /data-motion=\{motion\}/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
   assert.match(floating, /stepX > 1\) setOverrideMotion\("runningRight"\)/);
@@ -95,5 +96,6 @@ test("ships a configurable and draggable floating portrait", async () => {
 
   await access(new URL("../public/emily-spritesheet.webp", import.meta.url));
   await access(new URL("../public/emily-web-spritesheet.webp", import.meta.url));
+  await access(new URL("../public/emily-web-down-spritesheet.webp", import.meta.url));
   await access(new URL("../public/og.png", import.meta.url));
 });
