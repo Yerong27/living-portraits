@@ -66,8 +66,12 @@ test("ships a configurable and draggable floating portrait", async () => {
   assert.doesNotMatch(styles, /data-motion="walkingDown"[^}]*scale\(/);
   assert.match(motion, /data-motion=\{motion\}/);
   assert.match(floating, /Math\.hypot\(rawX, rawY\) > 6/);
-  assert.match(floating, /stepX > 1\) setOverrideMotion\("runningRight"\)/);
-  assert.match(floating, /stepX < -1\) setOverrideMotion\("runningLeft"\)/);
+  assert.match(floating, /const stepY = event\.clientY - active\.lastPointer\.y/);
+  assert.match(floating, /Math\.abs\(delta\.x\) >= Math\.abs\(delta\.y\)/);
+  assert.match(
+    floating,
+    /motionForDirection\(dominantDirection\(\{ x: stepX, y: stepY \}\)\)/,
+  );
   assert.match(floating, /motion=\{overrideMotion \?\? motion\}/);
   assert.match(floating, /setPointerCapture/);
   assert.match(floating, /localStorage\.setItem/);

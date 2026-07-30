@@ -33,6 +33,13 @@ function motionForDirection(direction: Point): Motion {
   return "walkingDown";
 }
 
+function dominantDirection(delta: Point): Point {
+  if (Math.abs(delta.x) >= Math.abs(delta.y)) {
+    return { x: Math.sign(delta.x), y: 0 };
+  }
+  return { x: 0, y: Math.sign(delta.y) };
+}
+
 type DragState = {
   pointerId: number;
   startPointer: Point;
@@ -387,13 +394,15 @@ export function FloatingPortrait({
     const rawX = event.clientX - active.startPointer.x;
     const rawY = event.clientY - active.startPointer.y;
     const stepX = event.clientX - active.lastPointer.x;
+    const stepY = event.clientY - active.lastPointer.y;
     active.lastPointer = { x: event.clientX, y: event.clientY };
 
     if (Math.hypot(rawX, rawY) > 6) {
       active.moved = true;
       window.clearTimeout(active.holdTimer);
-      if (stepX > 1) setOverrideMotion("runningRight");
-      if (stepX < -1) setOverrideMotion("runningLeft");
+      if (Math.hypot(stepX, stepY) > 1) {
+        setOverrideMotion(motionForDirection(dominantDirection({ x: stepX, y: stepY })));
+      }
     }
 
     const dx = Math.min(
